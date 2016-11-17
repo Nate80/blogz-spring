@@ -63,8 +63,24 @@ public class AuthenticationController extends AbstractController {
 	public String login(HttpServletRequest request, Model model) {
 		
 		// TODO - implement login
+		String username = request.getParameter("username");
+		String password = request.getParameter("password");
 		
-		return "redirect:blog/newpost";
+		if(!User.isValidUsername(username)){
+			model.addAttribute("username_error", "invalid username.");
+			return "login";
+		} 
+		else if(!User.isValidPassword(password)){
+			model.addAttribute("password_error", "Invalid password.");
+			return "login";
+		}
+		else{
+			userDao.find(user);
+			HttpSession thisSession = request.getSession();
+			this.setUserInSession(thisSession, user);
+			return "redirect:blog/newpost";
+		}
+		
 	}
 	
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
