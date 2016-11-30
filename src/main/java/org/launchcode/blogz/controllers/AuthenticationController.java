@@ -31,20 +31,24 @@ public class AuthenticationController extends AbstractController {
 		String password = request.getParameter("password");
 		String verify = request.getParameter("verify"); //uses verification from template "signup.html"
 		
+		if(!password.equals(verify)){
+			model.addAttribute("verify_error", "The passwords do not match.");
+			model.addAttribute("username", username);
+			return "signup";
+		}
+		
+		else {
+			
 		if(!User.isValidUsername(username)){  
 			  model.addAttribute("username_error", "Invalid username.");
+			  model.addAttribute("username", username);
 			  return "signup";
 		  }
 		  else if(!User.isValidPassword(password)){  
 			  model.addAttribute("password_error","Invalid password.");
 			  model.addAttribute("username", username);
 			  return "signup";
-		  }
-		  else if(!User.isValidPassword(verify)){ //(!password.equals(verify))
-			  model.addAttribute("verify_error", "The passwords do not match.");
-			  model.addAttribute("username",  username);
-			  return "signup";
-		  } else {
+		  } else {  //if everything works as it should
 		
 		User newUser = new User(username, password);
 		userDao.save(newUser);
@@ -53,7 +57,7 @@ public class AuthenticationController extends AbstractController {
 		return "redirect:blog/newpost";
 		}
 	}
-	
+	}
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String loginForm() {
 		return "login";
@@ -65,22 +69,27 @@ public class AuthenticationController extends AbstractController {
 		// TODO - implement login
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
+		User user = userDao.findByUsername(username);
+		model.addAttribute("username", username);
+		model.addAttribute("password", password);
+		boolean checkUser = username.equals(user.getUsername());
 		
-		if(!User.isValidUsername(username)){
-			model.addAttribute("username_error", "invalid username.");
-			return "login";
-		} 
-		else if(!User.isValidPassword(password)){
-			model.addAttribute("password_error", "Invalid password.");
+		if(checkUser != true) {
+			model.addAttribute("error", "Please enter a valid password");
 			return "login";
 		}
-		else{
-			userDao.find(user);
+		else if (user.isMatchingPassword(password) != true) {
+			model.addAttribute("error", "Please enter a valid password");
+			model.addAttribute("username", username);
+			return "login";
+		}
+		
+		else {
 			HttpSession thisSession = request.getSession();
 			this.setUserInSession(thisSession, user);
 			return "redirect:blog/newpost";
 		}
-		
+			
 	}
 	
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
