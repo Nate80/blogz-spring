@@ -60,7 +60,9 @@ public class PostController extends AbstractController {
 	public String userPosts(@PathVariable String username, Model model) {
 		
 		// TODO - implement userPosts
-		
+		User currentUser = userDao.findByUsername(username);
+		List<Post> userPosts = currentUser.getPosts();
+		model.addAttribute("posts", userPosts);		
 		return "blog";
 	}
 	
