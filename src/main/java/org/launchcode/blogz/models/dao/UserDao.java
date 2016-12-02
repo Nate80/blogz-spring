@@ -12,10 +12,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserDao extends CrudRepository<User, Integer> {
 
-    User findByUid(int uid);
+    public User findByUid(int uid);
     
-    List<User> findAll();
+    public List<User> findAll();
     
     // TODO - add method signatures as needed
+    public User findByUsername(String username);
 
 }
