@@ -72,25 +72,26 @@ public class AuthenticationController extends AbstractController {
 		User user = userDao.findByUsername(username);
 		model.addAttribute("username", username);
 		model.addAttribute("password", password);
-		boolean checkUser = username.equals(user.getUsername());
+		boolean checkUser = username.equals(user);
 		
 		if(checkUser != true) {
-			model.addAttribute("error", "Please enter a valid password");
+			model.addAttribute("error", "Please enter a valid username and a valid password");
 			return "login";
 		}
 		else if (user.isMatchingPassword(password) != true) {
-			model.addAttribute("error", "Please enter a valid password");
-			model.addAttribute("username", username);
-			return "login";
-		}
+				model.addAttribute("error", "Please enter a valid password");
+				model.addAttribute("username", username);
+				return "login";
+			}
 		
 		else {
 			HttpSession thisSession = request.getSession();
 			this.setUserInSession(thisSession, user);
 			return "redirect:blog/newpost";
 		}
+		}
 			
-	}
+	
 	
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
 	public String logout(HttpServletRequest request){
