@@ -33,11 +33,14 @@ public class PostController extends AbstractController {
 		if(title == "" || title == null) {
 			model.addAttribute("Error", "Title required");
 			return "newpost";
-		} else if(body == "" || body == null) {
+			} 
+		
+		else if(body == "" || body == null) {
 			model.addAttribute("Error", "Content Required");
 			model.addAttribute("title", title);
 			return "newpost";
-		} else { //if title and body != null and != ""
+		} 
+		else { //if title and body != null and != ""
 			Post newPost = new Post(title, body, author);
 			postDao.save(newPost);
 			int postUid = newPost.getUid();
