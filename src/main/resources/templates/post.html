@@ -7,6 +7,10 @@
 	<div th:replace="template :: navigation"></div>
 
 	<!-- TODO - display a single blog post -->
+	<h2><a th:text="${post.title}"></a></h2>
+		<p><a th:text="${post.body}"></a></p>
+		
+		<p><a th:text="'written by ' + ${post.author.username} + ' on ' + ${#dates.format(post.created, 'yy-MM-dd')} "></a></p>
 
 </body>
 </html>
