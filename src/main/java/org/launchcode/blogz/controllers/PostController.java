@@ -1,5 +1,7 @@
 package org.launchcode.blogz.controllers;
 
+import java.sql.Date;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,50 +25,41 @@ public class PostController extends AbstractController {
 	
 	@RequestMapping(value = "/blog/newpost", method = RequestMethod.POST)
 	public String newPost(HttpServletRequest request, Model model) {
-		
-		// TODO - implement newPost
 		String body = request.getParameter("body");
 		String title = request.getParameter("title");
 		HttpSession thisSession = request.getSession();
 		User author = this.getUserFromSession(thisSession);
-		
-		if(title == "" || title == null) {
-			model.addAttribute("Error", "Title required");
+        
+		if(title == "" || title == null){
+			model.addAttribute("error", "Title required.");
 			return "newpost";
-			} 
-		
-		else if(body == "" || body == null) {
-			model.addAttribute("Error", "Content Required");
+		}
+		else if(body == "" || body == null){
+			model.addAttribute("error", "Content required.");
 			model.addAttribute("title", title);
 			return "newpost";
-		} 
-		else { //if title and body != null and != ""
+		}
+		else{//if title and body != null & != ""
 			Post newPost = new Post(title, body, author);
 			postDao.save(newPost);
 			int postUid = newPost.getUid();
-			return "redirect:" + newPost.getAuthor().getUsername() + "/" + postUid; //redirects to new page
+			return "redirect:" + newPost.getAuthor().getUsername() + "/" + postUid;		
 		}
-		
-		  		
 	}
 	
 	@RequestMapping(value = "/blog/{username}/{uid}", method = RequestMethod.GET)
 	public String singlePost(@PathVariable String username, @PathVariable int uid, Model model) {
-		
-		// TODO - implement singlePost
 		Post currentPost = postDao.findByUid(uid);
-		model.addAttribute("post", currentPost);		
+		model.addAttribute("post", currentPost);
 		return "post";
 	}
 	
 	@RequestMapping(value = "/blog/{username}", method = RequestMethod.GET)
 	public String userPosts(@PathVariable String username, Model model) {
-		
-		// TODO - implement userPosts
 		User currentUser = userDao.findByUsername(username);
 		List<Post> userPosts = currentUser.getPosts();
-		model.addAttribute("posts", userPosts);		
+		model.addAttribute("posts", userPosts);
 		return "blog";
 	}
-	
 }
+
