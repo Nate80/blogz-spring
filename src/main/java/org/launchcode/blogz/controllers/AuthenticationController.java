@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 public class AuthenticationController extends AbstractController {
-	
-	
 	@Autowired
 	private UserDao userDao;
 	
@@ -72,24 +70,27 @@ public class AuthenticationController extends AbstractController {
 		User user = userDao.findByUsername(username);
 		model.addAttribute("username", username);
 		model.addAttribute("password", password);
-		boolean checkUser = username.equals(user);
+		//boolean checkUser = username.equals(user);
 		
-		if(checkUser != true) {
-			model.addAttribute("error", "Please enter a valid username and a valid password");
+		//if(checkUser != true) 
+		
+		if(user == null) //changed this from the boolean, per Max's advice
+		{
+			model.addAttribute("error", "What are you thinking?");
 			return "login";
 		}
-		else if (user.isMatchingPassword(password) != true) {
-				model.addAttribute("error", "Please enter a valid password");
+		if (user.isMatchingPassword(password) != true) {
+				model.addAttribute("error", "Please enter a valid username and a valid password");
 				model.addAttribute("username", username);
 				return "login";
 			}
 		
-		else {
+		
 			HttpSession thisSession = request.getSession();
 			this.setUserInSession(thisSession, user);
 			return "redirect:blog/newpost";
 		}
-		}
+		
 			
 	
 	
