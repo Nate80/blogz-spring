@@ -80,7 +80,7 @@ public class Post extends AbstractEntity {
 	}
 	
 	@NotNull
-	@Column(name = "modified")
+	@Column(name = "modified")  // you could do nullable = false which would in lieu of the above @NotNull annotation (see Persistence video21:00)
 	public Date getModified() {
 		return modified;
 	}
